@@ -10,6 +10,7 @@ SRC_REPO = "src"
 LIST_OF_REQUIREMENTS = ['streamlit']
 
 
+
 setup(
     name=SRC_REPO,
     version="0.0.1",
