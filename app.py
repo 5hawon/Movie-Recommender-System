@@ -1,6 +1,15 @@
 import pickle
 import streamlit as st
 import requests
+# Function to fetch movie poster
+def fetch_poster(movie_id, size='w500'):
+    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key=c7ec19ffdd3279641fb606d19ceb9bb1&language=en-US"
+    data = requests.get(url).json()
+    poster_path = data['poster_path']
+    full_path = f"https://image.tmdb.org/t/p/{size}/{poster_path}"
+   
+    return full_path
+
 
 def fetch_movie_details(movie_id):
     url = "https://api.themoviedb.org/3/movie/{}?api_key=8265bd1679663a7ea12ac168da84d2e8&language=en-US".format(movie_id)
@@ -28,6 +37,8 @@ def recommend(movie):
 
 # Streamlit app
 st.set_page_config(page_title='Movie Recommender', layout='wide')
+fancy_photo_url = "https://editor.analyticsvidhya.com/uploads/76889recommender-system-for-movie-recommendation.jpg"  # Replace with the URL of your fancy photo
+st.markdown(f'<img src="{fancy_photo_url}" style="width:100%; height:300px;">', unsafe_allow_html=True)
 
 # Load data
 movies = pickle.load(open('artifacts/movie_list.pkl', 'rb'))
@@ -69,6 +80,29 @@ st.markdown("""
 
 # UI
 st.title('Movie Recommender System Using Machine Learning')
+#Image Carousel
+import streamlit.components.v1 as components
+imageCarouselComponent = components.declare_component("image-carousel-component", path="frontend/public")
+imageUrls = [
+    'https://image.tmdb.org/t/p/w500//otzHnhXba5XsE6Gozl3Gzks0z8L.jpg',
+    'https://image.tmdb.org/t/p/w500//7WsyChQLEftFiDOVTGkv3hFpyyt.jpg',
+    'https://image.tmdb.org/t/p/w500//dsKRtNIPFcmxhs6RDOMRCm0PfkW.jpg',
+    'https://image.tmdb.org/t/p/w500//eZsFXr3m0shC5HH7SRlZouiuQVH.jpg',
+    'https://image.tmdb.org/t/p/w500//75gDv38UgRtAukSxNXcjatyQmEa.jpg',
+    'https://image.tmdb.org/t/p/w500//bQqHksFAeUdozGGABxHJt3YVIyA.jpg',
+    'https://image.tmdb.org/t/p/w500//iFQrK0NHA4OMAvzyJVW4DA0kAFz.jpg',
+    'https://image.tmdb.org/t/p/w500//hek3koDUyRQk7FIhPXsa6mT2Zc3.jpg',
+    'https://image.tmdb.org/t/p/w500//qJ2tW6WMUDux911r6m7haRef0WH.jpg',
+    'https://image.tmdb.org/t/p/w500//k7eYdWvhYQyRQoU2TB2A2Xu2TfD.jpg',
+    'https://image.tmdb.org/t/p/w500//1QpO9wo7JWecZ4NiBuu625FiY1j.jpg',
+    'https://image.tmdb.org/t/p/w500//x9yjkm9gIz5qI5fJMUTfBnWiB2o.jpg',
+    'https://image.tmdb.org/t/p/w500//jg73umEpBHT7l4DBmV5bR78H1JI.jpg'
+
+   
+]
+
+imageCarouselComponent(imageUrls=imageUrls, height=200)
+
 movie_list = movies['title'].values
 selected_movie = st.selectbox(
     "Type or select a movie from the dropdown",
@@ -84,24 +118,30 @@ if st.button('Show Recommendation'):
         with col:
             st.text(recommended_movie_names[i])
             st.image(recommended_movie_posters[i], use_column_width=True)
-            st.markdown(f"<a href='https://www.imdb.com/title/{recommended_movie_ids[i]}' target='_blank'>"
-                        "<div class='watch-button'>Watch on Netflix</div></a>", unsafe_allow_html=True)
+            st.markdown(f"<a class='button-text' href='https://www.imdb.com/title/{recommended_movie_ids[i]}' target='_blank'>"
+                        "<div class='watch-button'>Go to IMDB</div></a>", unsafe_allow_html=True)
 
 # Custom styling with HTML
 st.markdown("""
     <style>
         .watch-button {
-            background-color: #E50914; /* Netflix Red */
+            background-color: #e50914; /* Netflix Red */
             border: none;
             color: white;
+            decoration: none;
             padding: 15px 32px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
+            font-size: 20px;
             margin: 4px 2px;
             cursor: pointer;
         }
+        .button-text {
+            text-decoration: none;
+            decoration: none;
+            color: white;
+            }
     </style>
 """, unsafe_allow_html=True)
 
